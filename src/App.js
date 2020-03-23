@@ -1,26 +1,46 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react'
+import axios from 'axios'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import './App.css'
+
+export default class App extends Component {
+    constructor(props){
+        super(props)
+        this.state ={
+            advice:'hello'
+        }
+        this.fetchAdvice = this.fetchAdvice.bind(this)
+    }
+
+    componentDidMount(){
+        this.fetchAdvice()
+    }
+    
+    fetchAdvice(){
+        axios.get('https://api.adviceslip.com/advice')
+            .then((response)=>{
+                // const {advices} = response.data.slip
+                this.setState(state=>({
+                    advice : response.data.slip.advice
+                })) // karena nama variable disini sama dengan nama property class maka cukup satu
+            })
+            .catch((error)=>{
+                console.log(error)
+            })
+        
+    }
+    render() {
+        // destructuring it
+        const {advice} = this.state
+        return (
+            <div className="app">
+                <div className="card">
+                    <h1 className="heading"> {advice} </h1>
+                    <button className="button" onClick={this.fetchAdvice}>
+                        <span>Give Me an Advice!</span>
+                    </button>
+                </div>
+            </div>
+        )
+    }
 }
-
-export default App;
